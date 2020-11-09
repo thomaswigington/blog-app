@@ -1,10 +1,14 @@
-
-
+/*Constants can be declared with uppercase or lowercase,
+but a common convention is to use all-uppercase letters.(and underscores - me)
+Constants are block-scoped. It does not mean the value it holds is immutable—just
+that the variable identifier cannot be reassigned. The temporal dead zone applies.
+The let statement declares a block-scoped local variable.- MDN Web Docs/CONST*/
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const _ = require('lodash');
-//for app.listen
+
+//for app.listen- see Express docs
 const port = 3000;
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -15,13 +19,22 @@ let posts = [];
 
 const app = express();
 
+/*Basic EJS setup. There is a views directory with a number of .ejs pages.*/
 app.set('view engine', 'ejs');
 
+/*Body-Parser: parse incoming request bodies in a middleware before your handlers.
+urlencoded: Returns middleware that only parses urlencoded bodies and only looks
+at requests where the Content-Type header matches the type option.   */
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('public'));
 
+app.use(express.static('public')); //serves static assets such as HTML files, images, and so on.
+
+/*app.METHOD(PATH, HANDLER) where app is an instance of express. METHOD is an HTTP
+request method, in lowercase. PATH is a path on the server. HANDLER is the function
+executed when the route is matched. Routes HTTP GET requests to the specified path with
+the specified callback functions.*/
 app.get('/', function(req, res) {
-  res.render('home', {
+  res.render('home', {                    /*res.render for EJS views*/
     startingContent: homeStartingContent,
     posts: posts
   });
@@ -49,10 +62,10 @@ app.post('/compose', function(req, res) {
   res.redirect('/');
 });
 
-//dynamic url
+/*Creates dynamic url */
 app.get('/posts/:postName', function(req, res){
   const requestedTitle = _.lowerCase(req.params.postName);
-
+/*The forEach() method executes a provided function once for each array element.*/
   posts.forEach(function(post){
     const storedTitle = _.lowerCase(post.title);
 
@@ -65,9 +78,6 @@ app.get('/posts/:postName', function(req, res){
   });
 
 });
-
-
-
 
 app.listen(port, function() {
   console.log('Server started on port 3000');
